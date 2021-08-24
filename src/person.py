@@ -51,6 +51,7 @@ class Customer(Person):
         super().__init__(full_name, age, gender)
         self._remaining_visits = 0
         self._total_visits = 0
+        self._is_active = True
 
     def add_visits(self, amount):
         from .gym import Gym
@@ -62,7 +63,19 @@ class Customer(Person):
         return amount%Gym.DEFAULT_VISIT_PRICE
 
     def visit_gym(self):
+        if not self._is_active:
+            raise Exception('Blocked. Cannot visit gym')
         if self._remaining_visits == 0:
             raise Exception('No remaining visits')
         self._remaining_visits -= 1
         self._total_visits += 1
+
+    @property
+    def is_active(self):
+        return self._is_active
+
+    def block(self):
+        self._is_active = False
+
+    def unblock(self):
+        self._is_active = True
